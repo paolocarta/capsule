@@ -1,0 +1,47 @@
+/*
+Copyright 2020 Clastix Labs.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+package registry
+
+import (
+	"fmt"
+	"strings"
+
+	"github.com/clastix/capsule/api/v1alpha1"
+)
+
+type registryClassForbidden struct {
+	registryName string
+	spec         v1alpha1.ContainerRegistriesSpec
+}
+
+func NewContainerRegistryForbidden(registryClassName string, spec v1alpha1.ContainerRegistriesSpec) error {
+	return &registryClassForbidden{
+		registryName: registryClassName,
+		spec:         spec,
+	}
+}
+
+func (f registryClassForbidden) Error() (err string) {
+	err = fmt.Sprintf("Registry Class %s is forbidden for the current Tenant", f.registryName)
+	if len(f.spec.Allowed) > 0 {
+		err += fmt.Sprintf(", one of the following (%s)", strings.Join(f.spec.Allowed, ", "))
+	}
+	if len(f.spec.AllowedRegex) > 0 {
+		err += fmt.Sprintf(", or matching the regex %s", f.spec.AllowedRegex)
+	}
+	return
+}
