@@ -47,6 +47,13 @@ type IngressClassesSpec struct {
 	AllowedRegex string `json:"allowedRegex"`
 }
 
+type IngressHostnamesSpec struct {
+	// +nullable
+	Allowed IngressHostnamesList `json:"allowed"`
+	// +nullable
+	AllowedRegex IngressRegex `json:"allowedRegex"`
+}
+
 type ContainerRegistriesSpec struct {
 	// +nullable
 	Allowed RegistryList `json:"allowed"`
@@ -63,6 +70,7 @@ type TenantSpec struct {
 	ServicesMetadata    AdditionalMetadata       `json:"servicesMetadata"`
 	StorageClasses      StorageClassesSpec       `json:"storageClasses"`
 	IngressClasses      IngressClassesSpec       `json:"ingressClasses"`
+	IngressHostnames    IngressHostnamesSpec     `json:"IngressHostnames"`
 	ContainerRegistries *ContainerRegistriesSpec `json:"containerRegistries,omitempty"`
 	// +kubebuilder:validation:Optional
 	NodeSelector    map[string]string                `json:"nodeSelector"`
